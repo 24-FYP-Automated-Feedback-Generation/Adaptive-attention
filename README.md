@@ -39,7 +39,7 @@ The **PAA Layer** integrates the student's cognitive profile with the problem-so
    ![Equation](https://latex.codecogs.com/svg.latex?Mp%20=%20\sigma(\text{fc}(\text{concat}[hR,%20oP],%20\text{dim}=-1)))
 
    **Explanation**: Combines the student's profile (\( oP \)) with their problem-solving context (\( hR \)), determining how much of the student's persona should influence the feedback. The learnable fully connected layer (fc) and sigmoid function allow the model to adjust the weight dynamically.
-   Here the hR and oP are concatenated such that it combines the student's profile with the student's problem-solved context. Since this persona+ student's code depends and each student's unique metacognitive profiles, this sigmoid function with fc(learnable) it self learns how much proportion/weight and what aspects of the student's profile need to be considered for feedback/output.
+   Here the hR and oP are concatenated such that it combines the student's profile with the student's problem-solved context. Since this persona+ student's code depends on each student's unique metacognitive profiles, the sigmoid function with fc(learnable) it self learns how much proportion/weight and what aspects of the student's profile need to be considered for feedback/output.
 
 
 3. **Context Importance Score (\( Mc \))**:
