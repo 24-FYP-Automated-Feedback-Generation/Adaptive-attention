@@ -33,37 +33,63 @@ The above transformer blocks are repeated four times to refine the output, which
 The **PAA Layer** integrates the student's cognitive profile with the problem-solving context to provide personalized feedback. It takes three inputs: \( hR \), \( oP \), and \( oC \), and processes them through the following steps:
 
 1. **Persona Importance Score (\( Mp \))**:
-   $
-   M_P = \sigma(\text{fc}(\text{concat}[h_R, o_P], \text{dim}=-1))
-   $
+
+   ![Equation](https://latex.codecogs.com/svg.latex?Mp%20=%20\sigma(\text{fc}(\text{concat}[hR,%20oP],%20\text{dim}=-1)))
+
    **Explanation**: Combines the student's profile (\( oP \)) with their problem-solving context (\( hR \)), determining how much of the student's persona should influence the feedback. The learnable fully connected layer (fc) and sigmoid function allow the model to adjust the weight dynamically.
 
-2. **Context Importance Score (\( Mc \))**:
-   $
-   Mc = 1 - Mp
-   $
+3. **Context Importance Score (\( Mc \))**:
+   
+   ![Equation](https://latex.codecogs.com/svg.latex?Mc%20=%201%20-%20Mp)
+
    **Explanation**: Complements the persona weight, balancing attention between the student’s cognitive state and the correctness of the solution. This ensures feedback can emphasize areas that require improvement, such as weaker metacognitive aspects.
 
-3. **Weighted Outputs**:
-   $
-   oP^{\text{weighted}} = Mp \odot oP
-   $
-   $
-   oC^{\text{weighted}} = Mc \odot oC
-   $
+5. **Weighted Outputs**:
+   
+   ![Equation](https://latex.codecogs.com/svg.latex?oP^{\text{weighted}}%20=%20Mp%20\odot%20oP)
+
+
+   ![Equation](https://latex.codecogs.com/svg.latex?oC^{\text{weighted}}%20=%20Mc%20\odot%20oC)
+
    **Explanation**: Applies the computed weights to the persona (\( oP \)) and context (\( oC \)) cross-attention outputs, tailoring the feedback according to the student's needs. If the student shows strong metacognitive skills, the feedback will emphasize persona aspects, whereas weaker cognitive profiles will receive more context-based feedback.
 
-4. **Combined Output (\( HPAA \))**:
-   $
-   HPAA = oP^{\text{weighted}} + oC^{\text{weighted}}
-   $
+7. **Combined Output (\( HPAA \))**:
+
+    ![Equation](https://latex.codecogs.com/svg.latex?HPAA%20=%20oP^{\text{weighted}}%20+%20oC^{\text{weighted}})
+
    **Explanation**: Integrates the weighted persona and context information, producing a unified representation that combines the student's profile with the problem context.
 
-5. **Final Output**:
-   $
-   \text{Output} = \text{fc}(HPAA)
-   $
+9. **Final Output**:
+
+   ![Equation](https://latex.codecogs.com/svg.latex?\text{Output}%20=%20\text{fc}(HPAA))
+
    **Explanation**: A final fully connected layer maps the combined output to the task-specific output space, which could be a sequence of personalized feedback or other relevant outputs.
+
+   ## Equations
+
+### Mp Equation
+
+![Equation](https://latex.codecogs.com/svg.latex?Mp%20=%20\sigma(\text{fc}(\text{concat}[hR,%20oP],%20\text{dim}=-1)))
+
+### Mc Equation
+
+![Equation](https://latex.codecogs.com/svg.latex?Mc%20=%201%20-%20Mp)
+
+### Weighted Persona Output
+
+![Equation](https://latex.codecogs.com/svg.latex?oP^{\text{weighted}}%20=%20Mp%20\odot%20oP)
+
+### Weighted Context Output
+
+![Equation](https://latex.codecogs.com/svg.latex?oC^{\text{weighted}}%20=%20Mc%20\odot%20oC)
+
+### Combined Output (HPAA)
+
+![Equation](https://latex.codecogs.com/svg.latex?HPAA%20=%20oP^{\text{weighted}}%20+%20oC^{\text{weighted}})
+
+### Final Output
+
+ ![Equation](https://latex.codecogs.com/svg.latex?\text{Output}%20=%20\text{fc}(HPAA))
 
 ## Conclusion
 
