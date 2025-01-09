@@ -30,7 +30,7 @@ Each transformer block contains:
 
 The above transformer blocks are repeated 4 times to refine the output, which is then passed through a **final fully connected layer** to generate the final logits.
 
-## PAA Layer (Personalized Attention Allocation Layer)
+## PAA Layer (Personalized Attention Adaptation Layer)
 
 The **PAA Layer** integrates the student's cognitive profile with the problem-solving context to provide personalized feedback. It takes three inputs: **\( hR \), \( oP \), and \( oC \),** and processes them through the following steps:
 
