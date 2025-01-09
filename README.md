@@ -20,50 +20,50 @@ The decoder processes the combined input of the guided prompt and the student's 
 
 ### Custom Transformer Block
 Each transformer block contains:
-1. **Self-Attention Layer (\( h_R \))**: Calculates the self-attention of the student's current state (initial and subsequent states).
-2. **Cross-Attention Layer 1 (\( o_P \))**: Computes cross-attention between the student persona and student code.
-3. **Cross-Attention Layer 2 (\( o_C \))**: Computes cross-attention between the problem context and student code.
-4. **PAA Layer Output (\( H_{PAA} \))**: Processes the attention outputs through the PAA Layer to blend persona and context.
-5. **MLP/RNN Layer**: Processes the \( H_{PAA} \) output to generate the transformer block output.
+1. **Self-Attention Layer (\( hR \))**: Calculates the self-attention of the student's current state (initial and subsequent states).
+2. **Cross-Attention Layer 1 (\( oP \))**: Computes cross-attention between the student persona and student code.
+3. **Cross-Attention Layer 2 (\( oC \))**: Computes cross-attention between the problem context and student code.
+4. **PAA Layer Output (\( HPAA \))**: Processes the attention outputs through the PAA Layer to blend persona and context.
+5. **MLP/RNN Layer**: Processes the \( HPAA \) output to generate the transformer block output.
 
 The above transformer blocks are repeated four times to refine the output, which is then passed through a fully connected layer to generate the final logits.
 
 ## PAA Layer (Personalized Attention Allocation Layer)
 
-The **PAA Layer** integrates the student's cognitive profile with the problem-solving context to provide personalized feedback. It takes three inputs: \( h_R \), \( o_P \), and \( o_C \), and processes them through the following steps:
+The **PAA Layer** integrates the student's cognitive profile with the problem-solving context to provide personalized feedback. It takes three inputs: \( hR \), \( oP \), and \( oC \), and processes them through the following steps:
 
-1. **Persona Importance Score (\( M_P \))**:
+1. **Persona Importance Score (\( Mp \))**:
    \[
-   M_P = \sigma(\text{fc}(\text{concat}[h_R, o_P], \text{dim}=-1))
+   Mp = \sigma(\text{fc}(\text{concat}[hR, oP], \text{dim}=-1))
    \]
-   - **Explanation**: Combines the student's profile (\( o_P \)) with their problem-solving context (\( h_R \)), determining how much of the student's persona should influence the feedback. The learnable fully connected layer (fc) and sigmoid function allow the model to adjust the weight dynamically.
+   **Explanation**: Combines the student's profile (\( oP \)) with their problem-solving context (\( hR \)), determining how much of the student's persona should influence the feedback. The learnable fully connected layer (fc) and sigmoid function allow the model to adjust the weight dynamically.
 
-2. **Context Importance Score (\( M_C \))**:
+2. **Context Importance Score (\( Mc \))**:
    \[
-   M_C = 1 - M_P
+   Mc = 1 - Mp
    \]
-   - **Explanation**: Complements the persona weight, balancing attention between the student’s cognitive state and the correctness of the solution. This ensures feedback can emphasize areas that require improvement, such as weaker metacognitive aspects.
+   **Explanation**: Complements the persona weight, balancing attention between the student’s cognitive state and the correctness of the solution. This ensures feedback can emphasize areas that require improvement, such as weaker metacognitive aspects.
 
 3. **Weighted Outputs**:
    \[
-   o_P^{\text{weighted}} = M_P \odot o_P
+   oP^{\text{weighted}} = Mp \odot oP
    \]
    \[
-   o_C^{\text{weighted}} = M_C \odot o_C
+   oC^{\text{weighted}} = Mc \odot oC
    \]
-   - **Explanation**: Applies the computed weights to the persona (\( o_P \)) and context (\( o_C \)) cross-attention outputs, tailoring the feedback according to the student's needs. If the student shows strong metacognitive skills, the feedback will emphasize persona aspects, whereas weaker cognitive profiles will receive more context-based feedback.
+   **Explanation**: Applies the computed weights to the persona (\( oP \)) and context (\( oC \)) cross-attention outputs, tailoring the feedback according to the student's needs. If the student shows strong metacognitive skills, the feedback will emphasize persona aspects, whereas weaker cognitive profiles will receive more context-based feedback.
 
-4. **Combined Output (\( H_{PAA} \))**:
+4. **Combined Output (\( HPAA \))**:
    \[
-   H_{PAA} = o_P^{\text{weighted}} + o_C^{\text{weighted}}
+   HPAA = oP^{\text{weighted}} + oC^{\text{weighted}}
    \]
-   - **Explanation**: Integrates the weighted persona and context information, producing a unified representation that combines the student's profile with the problem context.
+   **Explanation**: Integrates the weighted persona and context information, producing a unified representation that combines the student's profile with the problem context.
 
 5. **Final Output**:
    \[
-   \text{Output} = \text{fc}(H_{PAA})
+   \text{Output} = \text{fc}(HPAA)
    \]
-   - **Explanation**: A final fully connected layer maps the combined output to the task-specific output space, which could be a sequence of personalized feedback or other relevant outputs.
+   **Explanation**: A final fully connected layer maps the combined output to the task-specific output space, which could be a sequence of personalized feedback or other relevant outputs.
 
 ## Conclusion
 
